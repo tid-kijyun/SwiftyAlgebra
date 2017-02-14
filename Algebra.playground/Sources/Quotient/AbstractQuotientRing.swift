@@ -31,7 +31,7 @@ extension EuclideanQuotientRing {
     }
     
     public var description: String {
-        return "\(value % mod) mod \(mod)"
+        return "[\(value)]"
     }
 }
 
