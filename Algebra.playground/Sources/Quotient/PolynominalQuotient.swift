@@ -1,21 +1,21 @@
 import Foundation
 
+// AlgExtension: returns the factory for generating an PolynomialQuotient element.
+// use as:
+//
+// let K = AlgExtension( Polynomial<Q>(1, 0, 1) )  // K = Q[x]/(x^2 + 1)
+// let a = K( Polynomial(0, 1) )                   // a = x mod x^2 + 1
+// a == -1                                         // true
+public func AlgExtension<K: Field>(_ divisor: Polynomial<K>) -> ((Polynomial<K>) -> PolynomialQuotient<K>) {
+    return { (value: Polynomial<K>) in PolynomialQuotient<K>(value: value, mod: divisor) }
+}
+
 public struct PolynomialQuotient<K: Field>: EuclideanQuotientField {
     public typealias R = Polynomial<K>
     public let value: R
     public let mod: R
     
-    // the factory for initializing a PolynomialQuotient element.
-    // use as:
-    //
-    // let K = PolynomialQuotient<Q>.generate( Polynomial(1, 0, 1) )  // K = Q[x]/(x^2 + 1)
-    // let a = K( Polynomial<Q>(0, 1) )                               // a = x mod x^2 + 1
-    // a == -1                                                        // true
-    static public func generate(_ divisor: Polynomial<K>) -> ((Polynomial<K>) -> PolynomialQuotient<K>) {
-        return { (value: Polynomial<K>) in PolynomialQuotient(value: value, mod: divisor) }
-    }
-    
-    private init(value: Polynomial<K>, mod: Polynomial<K>) {
+    public init(value: Polynomial<K>, mod: Polynomial<K>) {
         // TODO must check the irreducibility of `mod` for this type to be a field.
         self.value = value
         self.mod = mod
