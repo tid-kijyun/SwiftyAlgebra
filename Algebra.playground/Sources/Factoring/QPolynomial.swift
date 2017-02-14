@@ -40,7 +40,11 @@ public func factorize(_ p: Polynomial<RationalNumber>) -> [Polynomial<RationalNu
 
 // cf. https://en.wikipedia.org/wiki/Square-free_polynomial
 // WARN: works only when ch(K) == 0
-public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> [Polynomial<K>] {
+public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> (result:Polynomial<K>, factors: [Polynomial<K>]) {
+    if p.degree == 0 {
+        return (result:p, factors:[])
+    }
+    
     typealias R = Polynomial<K>
     
     func itr(_ b: R, _ d: R, _ res: [R]) -> [R] {
@@ -54,7 +58,8 @@ public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> [Polynomial<K>] {
         default: return itr(B, D, res + [a])
         }
     }
-    let res = itr(p, p.derivative, []).filter{ $0 != 1}
+    let res = itr(p, p.derivative, []).filter{ $0 != 1 }
     
-    return (res.count > 1) ? Array(res.dropFirst()) : res
+    return (result: res.first ?? p,
+            factors:(res.count > 1) ? Array(res.dropFirst()) : res)
 }
