@@ -55,7 +55,7 @@ extension Matrix: CustomStringConvertible {
             return (0 ..< cols).map({ j in
                 return "\(self[i, j])"
             }).joined(separator: ", ")
-        }).joined(separator: "; ") + "]"
+        }).joined(separator: "\n ") + "]"
     }
 }
 
@@ -84,7 +84,7 @@ public prefix func - <R: Ring, n: _Int, m: _Int>(a: Matrix<R, n, m>) -> Matrix<R
 
 public func - <R: Ring, n: _Int, m: _Int>(a: Matrix<R, n, m>, b: Matrix<R, n, m>) -> Matrix<R, n, m> {
     return Matrix<R, n, m>{ (i, j) -> R in
-        return a[i, j] + b[i, j]
+        return a[i, j] - b[i, j]
     }
 }
 
@@ -112,7 +112,7 @@ public func ** <R: Ring, n: _Int>(a: Matrix<R, n, n>, b: Int) -> Matrix<R, n, n>
     return b == 0 ? Matrix<R, n, n>.identity : a * (a ** (b - 1))
 }
 
-public func det<R: Ring, n: _Int>(a: Matrix<R, n, n>) -> R {
+public func det<R: Ring, n: _Int>(_ a: Matrix<R, n, n>) -> R {
     return Permutation<n>.all.reduce(0) {
         (res: R, s: Permutation<n>) -> R in
         res + R(sgn(s)) * (0 ..< n.value).reduce(1) {
