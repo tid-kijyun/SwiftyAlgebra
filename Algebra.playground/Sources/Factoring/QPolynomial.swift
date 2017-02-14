@@ -1,6 +1,5 @@
 import Foundation
 
-
 // cf. https://en.wikipedia.org/wiki/Factorization_of_polynomials#Obtaining_linear_factors
 public func factorize(_ p: Polynomial<RationalNumber>) -> [Polynomial<RationalNumber>] {
     typealias Q = RationalNumber
@@ -40,6 +39,7 @@ public func factorize(_ p: Polynomial<RationalNumber>) -> [Polynomial<RationalNu
 
 // cf. https://en.wikipedia.org/wiki/Square-free_polynomial
 // WARN: works only when ch(K) == 0
+
 public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> (result:Polynomial<K>, factors: [Polynomial<K>]) {
     if p.degree == 0 {
         return (result:p, factors:[])
@@ -62,4 +62,8 @@ public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> (result:Polynomial<K>, factor
     
     return (result: res.first ?? p,
             factors:(res.count > 1) ? Array(res.dropFirst()) : res)
+}
+
+public func isSqfree<K: Field>(_ f: Polynomial<K>) -> Bool {
+    return sqfreeDecomp(f).result == f
 }

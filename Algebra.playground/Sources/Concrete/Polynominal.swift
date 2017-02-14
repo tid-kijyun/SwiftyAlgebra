@@ -16,6 +16,8 @@ public protocol PolynomialType: Ring, CustomStringConvertible {
     
     func apply(_ x: R) -> R
     func map(_ f: ((R) -> R)) -> Self
+    func on(_ g: Self) -> Self
+    
     var derivative: Self {get}
 }
 
@@ -60,6 +62,12 @@ public extension PolynomialType {
     
     public func map(_ f: ((R) -> R)) -> Self {
         return Self.init(coeffs.map(f))
+    }
+    
+    public func on(_ g: Self) -> Self {
+        return (0...degree).reduce(0) { (sum, i) in
+            sum + Self(coeff(i)) * (g ** i)
+        }
     }
     
     public var derivative: Self {
@@ -167,4 +175,18 @@ public struct RingPolynomial<_R: Ring>: PolynomialType {
     public init(_ coeffs: [_R]) {
         self.coeffs = coeffs
     }
+}
+
+// Util Funcs
+
+public func resultant<K: Field>(_ f: Polynomial<K>, _ g: Polynomial<K>) -> K {
+    let (m, n) = (f.degree, g.degree)
+    let A = TypeLooseMatrix(rows: m + n, cols: m + n) { (i, j) -> K in
+        if i < n {
+            return (0...m).contains(j - i) ? f.coeff(j - i) : 0
+        } else {
+            return (0...n).contains(n + j - i) ? g.coeff(n + j - i) : 0
+        }
+    }
+    return det(A)
 }
