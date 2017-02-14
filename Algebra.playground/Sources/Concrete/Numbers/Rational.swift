@@ -50,11 +50,11 @@ public func - (a: RationalNumber, b: RationalNumber) -> RationalNumber {
 }
 
 public func * (a: RationalNumber, b: RationalNumber) -> RationalNumber {
-    return RationalNumber(a.p * b.p, a.q * b.q)
+    return RationalNumber(a.p * b.p, a.q * b.q).reduced
 }
 
 public func / (a: RationalNumber, b: RationalNumber) -> RationalNumber {
-    return RationalNumber(a.p * b.q, a.q * b.p)
+    return RationalNumber(a.p * b.q, a.q * b.p).reduced
 }
 
 extension RationalNumber: CustomStringConvertible {

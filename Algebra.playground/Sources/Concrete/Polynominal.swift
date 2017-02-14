@@ -63,9 +63,9 @@ public extension PolynomialType {
     }
     
     public var derivative: Self {
-        return Self.init(degree: degree - 1) {
+        return (degree > 0) ? Self.init(degree: degree - 1) {
             R($0 + 1) * coeff($0 + 1)
-        }
+        } : 0
     }
 }
 

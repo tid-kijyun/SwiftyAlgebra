@@ -38,3 +38,23 @@ public func factorize(_ p: Polynomial<RationalNumber>) -> [Polynomial<RationalNu
     return result
 }
 
+// cf. https://en.wikipedia.org/wiki/Square-free_polynomial
+// WARN: works only when ch(K) == 0
+public func sqfreeDecomp<K>(_ p: Polynomial<K>) -> [Polynomial<K>] {
+    typealias R = Polynomial<K>
+    
+    func itr(_ b: R, _ d: R, _ res: [R]) -> [R] {
+        let a = gcd(b, d).toMonic()
+        let B = (b /% a).q
+        let C = (d /% a).q
+        let D = C - B.derivative
+        
+        switch D.degree {
+        case 0:  return res + [a, B.toMonic()]
+        default: return itr(B, D, res + [a])
+        }
+    }
+    let res = itr(p, p.derivative, []).filter{ $0 != 1}
+    
+    return (res.count > 1) ? Array(res.dropFirst()) : res
+}
