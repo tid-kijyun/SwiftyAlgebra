@@ -10,6 +10,12 @@ public protocol QuotientRing: Ring, CustomStringConvertible {
     init(_ r: R)
 }
 
+public extension QuotientRing {
+    init(_ value: Int) {
+        self.init(R(value))
+    }
+}
+
 public protocol QuotientField: QuotientRing, Field {}
 
 public protocol EuclideanQuotientRing: QuotientRing {
