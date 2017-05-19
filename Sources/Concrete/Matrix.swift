@@ -1,4 +1,5 @@
 import Foundation
+import Accelerate
 
 public struct Matrix<_R: Ring, n: _Int, m: _Int>: Module, Sequence, CustomStringConvertible {
     public typealias R = _R
@@ -178,6 +179,19 @@ public func * <R: Ring, n: _Int, m: _Int>(a: Matrix<R, n, m>, r: R) -> Matrix<R,
 }
 
 public func * <R: Ring, n: _Int, m: _Int, p: _Int>(a: Matrix<R, n, m>, b: Matrix<R, m, p>) -> Matrix<R, n, p> {
+    
+    if R.self == IntegerNumber.self && a.rows > 0 && a.cols > 0 && b.cols > 0 {
+        var grid: [Double] = Array(repeating: 0.0, count: a.rows * b.cols)
+        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                    Int32(a.rows), Int32(b.cols), Int32(a.cols),
+                    1.0,
+                    a.grid.map{Double($0 as! IntegerNumber)}, Int32(a.cols),
+                    b.grid.map{Double($0 as! IntegerNumber)}, Int32(b.cols),
+                    0.0,
+                    &grid, Int32(b.cols))
+        
+        return (Matrix<IntegerNumber, n, p>(rows: a.rows, cols: b.cols, grid: grid.map{ IntegerNumber(round($0)) }) as Any) as! Matrix<R, n, p>
+    }
     return Matrix<R, n, p>(rows: a.rows, cols: b.cols) { (i, k) -> R in
         return (0 ..< a.cols)
                 .map({j in a[i, j] * b[j, k]})
