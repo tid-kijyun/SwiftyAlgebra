@@ -3,6 +3,8 @@ import Foundation
 public protocol Ring: AdditiveGroup, Monoid, ExpressibleByIntegerLiteral {
     associatedtype IntegerLiteralType = Int
     init(_ intValue: Int)
+    
+    static var matrixOperation: BaseMatrixOperation<Self> { get }
     static func matrixElimination<n:_Int, m:_Int>(_ A: Matrix<Self, n, m>, mode: MatrixEliminationMode) -> BaseMatrixElimination<Self, n, m>
 }
 
@@ -22,6 +24,10 @@ public extension Ring {
     
     static func **(a: Self, n: Int) -> Self {
         return (0 ..< n).reduce(Self.identity){ (res, _) in res * a }
+    }
+    
+    static var matrixOperation: BaseMatrixOperation<Self> {
+        return BaseMatrixOperation<Self>.sharedInstance
     }
     
     // must override in subclass

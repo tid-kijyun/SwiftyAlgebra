@@ -48,6 +48,7 @@
 		147D98061EB9B26200C736AC /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147D98051EB9B26200C736AC /* Dictionary.swift */; };
 		147D98091EBA0CD200C736AC /* Simplex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147D98081EBA0CD200C736AC /* Simplex.swift */; };
 		DD3B16F01ECECC5600EC6C2A /* debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3B16EF1ECECC5500EC6C2A /* debug.swift */; };
+		DD8F38721ED3121200E04161 /* AcceleratedMatrixOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F38711ED3121200E04161 /* AcceleratedMatrixOperation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		147D98051EB9B26200C736AC /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
 		147D98081EBA0CD200C736AC /* Simplex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Simplex.swift; sourceTree = "<group>"; };
 		DD3B16EF1ECECC5500EC6C2A /* debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = debug.swift; sourceTree = "<group>"; };
+		DD8F38711ED3121200E04161 /* AcceleratedMatrixOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcceleratedMatrixOperation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				140E809F1ECDEA8E00B89719 /* combinations.swift */,
+				DD8F38711ED3121200E04161 /* AcceleratedMatrixOperation.swift */,
 				1424F4F01EB997780052581F /* MatrixElimination.swift */,
 				1424F4F11EB997780052581F /* PolynomialFactorization.swift */,
 				147D98021EB9B06900C736AC /* IntegerFactorization.swift */,
@@ -425,6 +428,7 @@
 				1424F50D1EB997780052581F /* PolynomialFactorization.swift in Sources */,
 				1424F5031EB997780052581F /* Polynominal.swift in Sources */,
 				1424F4FD1EB997780052581F /* Module.swift in Sources */,
+				DD8F38721ED3121200E04161 /* AcceleratedMatrixOperation.swift in Sources */,
 				1424F5111EB997780052581F /* optable.swift in Sources */,
 				1424F5021EB997780052581F /* Permutation.swift in Sources */,
 				1424F4FC1EB997780052581F /* Group.swift in Sources */,
