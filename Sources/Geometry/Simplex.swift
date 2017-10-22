@@ -110,6 +110,10 @@ public struct Simplex: GeometricCell {
     public static func ==(a: Simplex, b: Simplex) -> Bool {
         return a.id == b.id // should be `a.verticesSet == b.verticesSet` but for performance.
     }
+    
+    public static func generator(_ V: VertexSet) -> ((Int...) -> Simplex) {
+        return { (indices: Int...) in Simplex(V, indices: indices) }
+    }
 }
 
 public extension Vertex {

@@ -89,6 +89,13 @@ public struct SimplicialComplex: GeometricComplex {
         return allCells(ofDim: s.dim + 1).filter{ $0.contains(s) }
     }
     
+    public static func filtration(_ list: [[Simplex]]) -> [SimplicialComplex] {
+        return (0 ..< list.count).map { i in
+            let cells = list[0 ... i].joined()
+            return SimplicialComplex(cells, generateFaces: true)
+        }
+    }
+    
     internal static func alignCells<S: Sequence>(_ cells: S, generateFaces gFlag: Bool) -> [[Simplex]] where S.Iterator.Element == Simplex {
         let dim = cells.reduce(0) { max($0, $1.dim) }
         let set = gFlag ? cells.reduce( Set<Simplex>() ){ (set, cell) in set.union( cell.allSubsimplices() ) }
