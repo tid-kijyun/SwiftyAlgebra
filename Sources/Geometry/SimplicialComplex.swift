@@ -34,6 +34,14 @@ public struct SimplicialComplex: GeometricComplex {
         return SimplicialComplex(sub)
     }
     
+    public func contains(_ s: Simplex) -> Bool {
+        if s.dim > self.dim {
+            return false
+        }
+        
+        return cells[s.dim].contains(s)
+    }
+    
     public func allCells(ofDim i: Int) -> [Simplex] {
         return (0...dim).contains(i) ? cells[i] : []
     }

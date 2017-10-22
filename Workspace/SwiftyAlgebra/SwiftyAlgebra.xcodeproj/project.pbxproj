@@ -70,6 +70,7 @@
 		DD6125921F31964E00FD5533 /* EucMatrixEliminator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6125911F31964E00FD5533 /* EucMatrixEliminator.swift */; };
 		DD61259A1F31AA2500FD5533 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6125991F31AA2500FD5533 /* Cache.swift */; };
 		DD90ACC91F763553001AFC9C /* PolynomialIdeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD90ACC81F763553001AFC9C /* PolynomialIdeal.swift */; };
+		DDB088AE1F9C652400E1E1B6 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB088AD1F9C652400E1E1B6 /* Persistence.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +158,7 @@
 		DD6125991F31AA2500FD5533 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		DD90ACC81F763553001AFC9C /* PolynomialIdeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolynomialIdeal.swift; sourceTree = "<group>"; };
 		DDB088AC1F9C642E00E1E1B6 /* Persistence.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Persistence.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		DDB088AD1F9C652400E1E1B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +383,7 @@
 				144EC9ED1F286A93001BC4BC /* BarycentricSubdivision.swift */,
 				146399731F191AD500A34CEE /* DualComplex.swift */,
 				141C0CDE1F28232F00D9BDDE /* CWComplex.swift */,
+				DDB088AD1F9C652400E1E1B6 /* Persistence.swift */,
 			);
 			path = Geometry;
 			sourceTree = "<group>";
@@ -541,6 +544,7 @@
 				1424F5061EB997780052581F /* Integer.swift in Sources */,
 				1424F5001EB997780052581F /* FreeModule.swift in Sources */,
 				DD90ACC91F763553001AFC9C /* PolynomialIdeal.swift in Sources */,
+				DDB088AE1F9C652400E1E1B6 /* Persistence.swift in Sources */,
 				1424F5041EB997780052581F /* FreeModHom.swift in Sources */,
 				14D261321EE44DB4006775E2 /* DynamicType.swift in Sources */,
 				146399741F191AD500A34CEE /* DualComplex.swift in Sources */,

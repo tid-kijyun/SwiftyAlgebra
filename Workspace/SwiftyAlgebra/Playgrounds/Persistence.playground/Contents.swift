@@ -20,5 +20,11 @@ let Ks = SimplicialComplex.filtration([
     [s(0, 2, 3)]
 ])
 
-print(Ks)
+let PH = Persistence(Ks)
+
+PH.birthTime(of: s(0))
+PH.birthTime(of: s(0, 1, 2))
+PH.birthTime(of: s(0, 1, 3))
+
+
 
