@@ -73,6 +73,10 @@ public struct Polynomial<K: Field>: EuclideanRing, Module {
         return self.map{ $0 / a }
     }
     
+    public static func monicTerm(ofDegree k: Int) -> Polynomial<K> {
+        return Polynomial<K>( Array(repeating: 0, count: k) + [1] )
+    }
+    
     public static var indeterminate: Polynomial<K> {
         return Polynomial<K>(0, 1)
     }
