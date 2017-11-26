@@ -17,13 +17,23 @@ class ViewController : NSViewController {
     var cameraNode: SCNNode!
     var cameraTargetNode: SCNNode!
     var axesNode:   SCNNode!
-    
-    var objects: [Vec4] = []
     var objectsNode: SCNNode!
+    
+    // TODO create some entity struct
+    var objects: [(Vec4, NSColor)] = [] {
+        didSet {
+            generateObjectNodes()
+        }
+    }
     
     @IBOutlet var slider: NSSlider!
     
     override func viewDidLoad() {
+        setupScene()
+        objects = generateS3()
+    }
+    
+    private func setupScene() {
         scene = SCNScene()
         
         sceneView.scene = scene
@@ -85,12 +95,43 @@ class ViewController : NSViewController {
         
         objectsNode = SCNNode()
         scene.rootNode.addChildNode(objectsNode)
-        
-        generateS3()
+    }
+    
+    // TODO move to some model class
+    
+    func generateS3(_ N: Int = 1000) -> [(Vec4, NSColor)] {
+        return (0 ..< N).map { _ in (SCNVector4.random(-1 ... 1).normalized, .blue) }
+    }
+    
+    func generateGL2(_ N: Int = 1000) -> [(Vec4, NSColor)] {
+        return (0 ..< N).map { _ in
+            let v = SCNVector4.random(-1 ... 1)
+            let c: NSColor = (v.x * v.w - v.y * v.z > 0) ? .red : .blue
+            return (v, c)
+        }
+    }
+    
+    // --TODO
+    
+    func generateObjectNodes() {
+        objectsNode.childNodes.forEach { n in
+            n.removeFromParentNode()
+        }
+        objects.forEach { (v, color) in
+            let n = point(v.xyz, color)
+            objectsNode.addChildNode(n)
+        }
         updateObjects()
     }
     
-    func point(_ pos: Vec3, _ color: NSColor = .black) -> SCNNode {
+    func updateObjects() {
+        objects.enumerated().forEach { (i, e) in
+            let v = e.0
+            objectsNode.childNodes[i].opacity = (abs(v.w - wValue) < 1) ? exp(-pow(v.w - wValue, 2) * 15) : 0
+        }
+    }
+    
+    private func point(_ pos: Vec3, _ color: NSColor = .black) -> SCNNode {
         let s = SCNSphere(radius: 0.05)
         s.segmentCount = 8
         s.color = color
@@ -99,53 +140,15 @@ class ViewController : NSViewController {
         return n
     }
     
-    func generateS3(_ N: Int = 1000) {
-        objects = (0 ..< N).map { _ in SCNVector4.random(-1 ... 1).normalized }
-        objects.forEach { v in
-            objectsNode.addChildNode( point(v.xyz, .blue) )
-        }
-    }
-    
-    /*
-    func generateT2(_ N: Int = 1000) {
-        objects = (0 ..< N).map { _ in
-            
-            return SCNVector4.random(-1 ... 1).normalized
-        }
-        objects.forEach { v in
-            let s = SCNSphere(radius: 0.02)
-            s.segmentCount = 16
-            s.color = .blue
-            let n = SCNNode(geometry: s)
-            n.position = v.xyz
-            objectsNode.addChildNode(n)
-        }
-    }
- */
-    
-    func generateGL2(_ N: Int = 1000) {
-        objects = (0 ..< N).map { _ in SCNVector4.random(-1 ... 1) }
-        objects.forEach { v in
-            objectsNode.addChildNode( point(v.xyz, (v.x * v.w - v.y * v.z > 0) ? .red : .blue) )
-        }
-    }
-    
-    func updateObjects() {
-        objects.enumerated().forEach { (i, v) in
-            let a = (abs(v.w - wValue) < 1) ? exp(-pow(v.w - wValue, 2) * 15) : 0
-            let n = objectsNode.childNodes[i]
-            n.opacity = a
-        }
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
+    override func scrollWheel(with event: NSEvent) {
+        let scale: CGFloat = 30.0
         let p = cameraNode.position
-        let t = atan2(p.z, p.x) + event.deltaX / 100
-        let s = clamp(atan2(p.y, len(p.x, p.z) ) + event.deltaY / 100, -PI_2, PI_2)
+        let t = atan2(p.z, p.x) + event.deltaX / scale
+        let s = clamp(atan2(p.y, len(p.x, p.z) ) + event.deltaY / scale, -PI_2, PI_2)
         cameraNode.position = 20 * Vec3(cos(s) * cos(t), sin(s), cos(s) * sin(t))
     }
     
-    override func scrollWheel(with event: NSEvent) {
+    override func mouseDragged(with event: NSEvent) {
         let camera = cameraNode.camera!
         let s0 = CGFloat(camera.orthographicScale)
         let s1 = clamp(CGFloat(s0) + event.deltaY / 10, 1, 10)
