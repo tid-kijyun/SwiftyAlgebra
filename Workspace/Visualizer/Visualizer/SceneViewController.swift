@@ -9,7 +9,7 @@
 import Cocoa
 import SceneKit
 
-class ViewController : NSViewController {
+class SceneViewController : NSViewController {
     var wValue: CGFloat = 0
     
     var scene: SCNScene!
