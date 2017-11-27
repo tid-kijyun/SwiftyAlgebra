@@ -97,34 +97,32 @@ class SceneViewController : NSViewController {
     }
     
     func generateObjectNodes() {
-        func add(_ _e: Entity, to parent: SCNNode) {
+        func node(_ _e: Entity) -> SCNNode {
             switch _e {
             case let e as Point:
-                let n = PointNode(e)
-                parent.addChildNode(n)
+                return PointNode(e)
                 
             case let e as Edge:
-                let n = EdgeNode(e)
-                parent.addChildNode(n)
+                return EdgeNode(e)
                 
             case let e as Triangle:
-                let n = TriangleNode(e)
-                parent.addChildNode(n)
+                return TriangleNode(e)
                 
             case let e as Polyhedron:
                 let n = SCNNode()
-                parent.addChildNode(n)
                 
-                for p in e.points { add(p, to: n) }
-                for e in e.edges  { add(e, to: n) }
-                for f in e.faces  { add(f, to: n) }
+                for p in e.points { n.addChildNode(node(p)) }
+                for e in e.edges  { n.addChildNode(node(e)) }
+                for f in e.faces  { n.addChildNode(node(f)) }
 
+                return n
+                
             default:
-                break
+                return SCNNode()
             }
         }
         
-        objects.forEach { e in add(e, to: objectsNode) }
+        objects.forEach { e in objectsNode.addChildNode(node(e)) }
         updateObjects()
     }
     
