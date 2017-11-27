@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SwiftyAlgebra
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -15,7 +16,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let vc = NSApplication.shared.mainWindow?.contentViewController as? SceneViewController else {
             fatalError()
         }
-        vc.objects = generateS3()
+        vc.objects = [
+            Polyhedron(SimplicialComplex.sphere(dim: 1), position: Vec4.zero, color: .blue)
+        ]
     }
 
     // TODO move to some model class

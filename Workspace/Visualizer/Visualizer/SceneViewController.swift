@@ -103,9 +103,22 @@ class SceneViewController : NSViewController {
         objects.forEach { e in
             switch e {
             case let p as Point:
-                let n = point(p.position.xyz, p.color)
+                let n = pointNode(p)
+                p.node = n
                 objectsNode.addChildNode(n)
-                e.node = n
+                
+            case let K as Polyhedron:
+                let n = SCNNode()
+                K.node = n
+                objectsNode.addChildNode(n)
+                
+                for p in K.points {
+                    let cn = pointNode(p)
+                    p.node = cn
+                    n.addChildNode(cn)
+                }
+                
+                break
             default:
                 break
             }
@@ -126,7 +139,11 @@ class SceneViewController : NSViewController {
         }
     }
     
-    private func point(_ pos: Vec3, _ color: NSColor = .black) -> SCNNode {
+    private func pointNode(_ p: Point) -> SCNNode {
+        return pointNode(p.xyz, p.color)
+    }
+    
+    private func pointNode(_ pos: Vec3, _ color: NSColor = .black) -> SCNNode {
         let s = SCNSphere(radius: 0.05)
         s.segmentCount = 8
         s.color = color
