@@ -104,10 +104,41 @@ class Edge: Entity, EntityObserver {
     }
 }
 
-class Polyhedron: Entity {
-    let edges: [Edge]
-    let points: [Point]
+class Triangle: Entity, EntityObserver {
+    let points: (Point, Point, Point)
     
+    init(p0: Point, p1: Point, p2: Point, color: NSColor) {
+        self.points = (p0, p1, p2)
+        
+        let pos = [p0.position, p1.position, p2.position].barycenter
+        super.init(position: pos, color: color)
+        
+        [p0, p1, p2].forEach{ $0.addObserver(self) }
+    }
+    
+    var normalVector: Vec3 {
+        let (p0, p1, p2) = points
+        let v1 = (p1.position - p0.position).xyz
+        let v2 = (p2.position - p0.position).xyz
+        return (v1 × v2).normalized
+    }
+    
+    func update(forEntity e: Entity) {
+        didUpdate()
+    }
+    
+    deinit {
+        points.0.removeObserver(self)
+        points.1.removeObserver(self)
+        points.2.removeObserver(self)
+    }
+}
+
+class Polyhedron: Entity {
+    let points: [Point]
+    let edges:  [Edge]
+    let faces:  [Triangle]
+
     init(_ K: SimplicialComplex, position: Vec4, color: NSColor) {
         var pointMap = [Vertex : Point]()
         let points = K.vertices.map { v -> Point in
@@ -121,8 +152,14 @@ class Polyhedron: Entity {
             return Edge(p0: pointMap[v0]!, p1: pointMap[v1]!, color: color)
         }
         
+        let faces = K.cells(ofDim: 2).map { s -> Triangle in
+            let (v0, v1, v2) = (s.vertices[0], s.vertices[1], s.vertices[2])
+            return Triangle(p0: pointMap[v0]!, p1: pointMap[v1]!, p2: pointMap[v2]!, color: color)
+        }
+        
         self.points = points
-        self.edges = edges
+        self.edges  = edges
+        self.faces  = faces
         
         super.init(position: position, color: color)
         

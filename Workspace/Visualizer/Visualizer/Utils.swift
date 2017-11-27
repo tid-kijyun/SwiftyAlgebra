@@ -9,6 +9,8 @@
 import Foundation
 import SceneKit
 
+infix operator ×: MultiplicationPrecedence
+
 let PI = CGFloat(Double.pi)
 let PI_2 = CGFloat(Double.pi / 2)
 
@@ -68,16 +70,16 @@ extension SCNVector3 {
         return SCNVector3Zero
     }
     
-    static func +(v: SCNVector3, w: SCNVector3) -> SCNVector3 {
-        return SCNVector3(v.x + w.x, v.y + w.y, v.z + w.z)
+    static func +(v1: SCNVector3, v2: SCNVector3) -> SCNVector3 {
+        return SCNVector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z)
     }
     
     static prefix func -(v: SCNVector3) -> SCNVector3 {
         return SCNVector3(-v.x, -v.y, -v.z)
     }
     
-    static func -(v: SCNVector3, w: SCNVector3) -> SCNVector3 {
-        return v + (-w)
+    static func -(v1: SCNVector3, v2: SCNVector3) -> SCNVector3 {
+        return v1 + (-v2)
     }
     
     static func *(a: CGFloat, v: SCNVector3) -> SCNVector3 {
@@ -86,6 +88,12 @@ extension SCNVector3 {
     
     static func /(v: SCNVector3, a: CGFloat) -> SCNVector3 {
         return SCNVector3(v.x / a, v.y / a, v.z / a)
+    }
+    
+    static func ×(v1: SCNVector3, v2: SCNVector3) -> SCNVector3 {
+        return SCNVector3(v1.y * v2.z - v1.z * v2.y,
+                          v1.z * v2.x - v1.x * v2.z,
+                          v1.x * v2.y - v1.y * v2.x)
     }
     
     static func random() -> SCNVector3 {
@@ -122,16 +130,16 @@ extension SCNVector4 {
         return SCNVector4Zero
     }
     
-    static func +(v: SCNVector4, w: SCNVector4) -> SCNVector4 {
-        return SCNVector4(v.x + w.x, v.y + w.y, v.z + w.z, v.w + w.w)
+    static func +(v1: SCNVector4, v2: SCNVector4) -> SCNVector4 {
+        return SCNVector4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w)
     }
     
     static prefix func -(v: SCNVector4) -> SCNVector4 {
         return SCNVector4(-v.x, -v.y, -v.z, -v.w)
     }
     
-    static func -(v: SCNVector4, w: SCNVector4) -> SCNVector4 {
-        return v + (-w)
+    static func -(v1: SCNVector4, v2: SCNVector4) -> SCNVector4 {
+        return v1 + (-v2)
     }
     
     static func *(a: CGFloat, v: SCNVector4) -> SCNVector4 {

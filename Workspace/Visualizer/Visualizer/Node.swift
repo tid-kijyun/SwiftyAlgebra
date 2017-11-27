@@ -94,3 +94,43 @@ class EdgeNode: SCNNode, EntityObserver {
         entity.removeObserver(self)
     }
 }
+
+
+class TriangleNode: SCNNode, EntityObserver {
+    let entity: Triangle
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError() // TODO
+    }
+    
+    init(_ e: Triangle) {
+        self.entity = e
+        super.init()
+        
+        let n = e.normalVector
+        let vs = [e.points.0.xyz, e.points.1.xyz, e.points.2.xyz]
+        let ns = Array(repeating: n, count: 3)
+        let fs: [Int32] = [0, 1, 2]
+        
+        let vSource = SCNGeometrySource(vertices: vs)
+        let nSource = SCNGeometrySource(normals:  ns)
+        let fSource = SCNGeometryElement(indices: fs, primitiveType: .triangles)
+        
+        let g = SCNGeometry(sources: [vSource, nSource], elements: [fSource])
+        g.color = e.color
+        g.firstMaterial?.isDoubleSided = true
+        
+        self.geometry = g
+        self.opacity = 0.5
+        
+        e.addObserver(self)
+    }
+    
+    func update(forEntity _: Entity) {
+        // TODO
+    }
+    
+    deinit {
+        entity.removeObserver(self)
+    }
+}

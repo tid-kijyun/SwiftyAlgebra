@@ -107,12 +107,17 @@ class SceneViewController : NSViewController {
                 let n = EdgeNode(e)
                 parent.addChildNode(n)
                 
+            case let e as Triangle:
+                let n = TriangleNode(e)
+                parent.addChildNode(n)
+                
             case let e as Polyhedron:
                 let n = SCNNode()
                 parent.addChildNode(n)
                 
                 for p in e.points { add(p, to: n) }
                 for e in e.edges  { add(e, to: n) }
+                for f in e.faces  { add(f, to: n) }
 
             default:
                 break
