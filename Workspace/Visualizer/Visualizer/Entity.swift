@@ -110,7 +110,7 @@ class Polyhedron: Entity {
     
     init(_ K: SimplicialComplex, position: Vec4, color: NSColor) {
         var pointMap = [Vertex : Point]()
-        let points = K.allVertices.map { v -> Point in
+        let points = K.vertices.map { v -> Point in
             let p =  Point(position: Vec4(Vec3.random(-1 ... 1)), color: color)
             pointMap[v] = p
             return p
@@ -174,7 +174,7 @@ class Polyhedron: Entity {
         }
         
         var i = 1
-        while itr() > 0.001 && i < 100 {
+        while itr() > 0.001 && i < 10000 {
             i += 1
         }
     }
