@@ -11,16 +11,27 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-
-
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+        guard let vc = NSApplication.shared.mainWindow?.contentViewController as? SceneViewController else {
+            fatalError()
+        }
+        vc.objects = generateS3()
     }
 
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+    // TODO move to some model class
+    
+    func generateS3(_ N: Int = 1000) -> [Visual] {
+        return (0 ..< N).map { _ in Point(position: Vec4.random(-1 ... 1).normalized, color: .blue) }
     }
-
-
+    
+    func generateGL2(_ N: Int = 1000) -> [Visual] {
+        return (0 ..< N).map { _ in
+            let v = Vec4.random(-1 ... 1)
+            let c: NSColor = (v.x * v.w - v.y * v.z > 0) ? .red : .blue
+            return Point(position: v, color: c)
+        }
+    }
+    
+    // --TODO
 }
 

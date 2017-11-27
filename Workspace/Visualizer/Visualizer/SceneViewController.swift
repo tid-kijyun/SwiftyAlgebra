@@ -20,7 +20,7 @@ class SceneViewController : NSViewController {
     var objectsNode: SCNNode!
     
     // TODO create some entity struct
-    var objects: [(Vec4, NSColor)] = [] {
+    var objects: [Visual] = [] {
         didSet {
             generateObjectNodes()
         }
@@ -30,7 +30,6 @@ class SceneViewController : NSViewController {
     
     override func viewDidLoad() {
         setupScene()
-        objects = generateS3()
     }
     
     private func setupScene() {
@@ -97,37 +96,33 @@ class SceneViewController : NSViewController {
         scene.rootNode.addChildNode(objectsNode)
     }
     
-    // TODO move to some model class
-    
-    func generateS3(_ N: Int = 1000) -> [(Vec4, NSColor)] {
-        return (0 ..< N).map { _ in (SCNVector4.random(-1 ... 1).normalized, .blue) }
-    }
-    
-    func generateGL2(_ N: Int = 1000) -> [(Vec4, NSColor)] {
-        return (0 ..< N).map { _ in
-            let v = SCNVector4.random(-1 ... 1)
-            let c: NSColor = (v.x * v.w - v.y * v.z > 0) ? .red : .blue
-            return (v, c)
-        }
-    }
-    
-    // --TODO
-    
     func generateObjectNodes() {
         objectsNode.childNodes.forEach { n in
             n.removeFromParentNode()
         }
-        objects.forEach { (v, color) in
-            let n = point(v.xyz, color)
-            objectsNode.addChildNode(n)
+        objects.forEach { e in
+            switch e {
+            case let p as Point:
+                let n = point(p.position.xyz, p.color)
+                objectsNode.addChildNode(n)
+                e.node = n
+            default:
+                break
+            }
         }
         updateObjects()
     }
     
     func updateObjects() {
-        objects.enumerated().forEach { (i, e) in
-            let v = e.0
-            objectsNode.childNodes[i].opacity = (abs(v.w - wValue) < 1) ? exp(-pow(v.w - wValue, 2) * 15) : 0
+        objects.forEach { e in
+            switch e {
+            case let p as Point:
+                if let n = p.node {
+                    n.opacity = (abs(p.w - wValue) < 1) ? exp(-pow(p.w - wValue, 2) * 15) : 0
+                }
+            default:
+                break
+            }
         }
     }
     
