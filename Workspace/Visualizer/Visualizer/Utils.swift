@@ -102,6 +102,10 @@ extension SCNVector4 {
         self.init(x: x, y: y, z: z, w: w)
     }
     
+    init(_ v: SCNVector3) {
+        self.init(v.x, v.y, v.z, 0)
+    }
+    
     var length: CGFloat {
         return sqrt(x * x + y * y + z * z + w * w)
     }

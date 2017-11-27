@@ -155,9 +155,5 @@ class SceneViewController : NSViewController {
     @IBAction func sliderMoved(target: NSSlider) {
         wValue = CGFloat(target.doubleValue)
         updateObjects()
-        
-        let e = objects[0] as! Polyhedron
-        let p = e.points[0]
-        p.position = Vec4.zero
     }
 }
