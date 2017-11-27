@@ -12,6 +12,10 @@ import SceneKit
 let PI = CGFloat(Double.pi)
 let PI_2 = CGFloat(Double.pi / 2)
 
+func clamp(_ x: Double, _ x0: Double, _ x1:Double) -> Double {
+    return max(x0, min(x, x1))
+}
+
 func clamp(_ x: CGFloat, _ x0: CGFloat, _ x1: CGFloat) -> CGFloat {
     return max(x0, min(x, x1))
 }

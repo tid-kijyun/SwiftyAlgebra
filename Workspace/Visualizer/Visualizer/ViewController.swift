@@ -140,19 +140,18 @@ class ViewController : NSViewController {
         return n
     }
     
+    override func magnify(with event: NSEvent) {
+        let camera = cameraNode.camera!
+        let s = 5.0
+        camera.orthographicScale = clamp(camera.orthographicScale - s * Double(event.magnification), 1.0, Double.infinity)
+    }
+    
     override func scrollWheel(with event: NSEvent) {
         let scale: CGFloat = 30.0
         let p = cameraNode.position
         let t = atan2(p.z, p.x) + event.deltaX / scale
         let s = clamp(atan2(p.y, len(p.x, p.z) ) + event.deltaY / scale, -PI_2, PI_2)
         cameraNode.position = 20 * Vec3(cos(s) * cos(t), sin(s), cos(s) * sin(t))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        let camera = cameraNode.camera!
-        let s0 = CGFloat(camera.orthographicScale)
-        let s1 = clamp(CGFloat(s0) + event.deltaY / 10, 1, 10)
-        camera.orthographicScale = s1.native
     }
     
     @IBAction func sliderMoved(target: NSSlider) {
