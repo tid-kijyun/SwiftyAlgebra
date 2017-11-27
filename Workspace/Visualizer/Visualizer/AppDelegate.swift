@@ -23,11 +23,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // TODO move to some model class
     
-    func generateS3(_ N: Int = 1000) -> [Visual] {
+    func generateS3(_ N: Int = 1000) -> [Entity] {
         return (0 ..< N).map { _ in Point(position: Vec4.random(-1 ... 1).normalized, color: .blue) }
     }
     
-    func generateGL2(_ N: Int = 1000) -> [Visual] {
+    func generateGL2(_ N: Int = 1000) -> [Entity] {
         return (0 ..< N).map { _ in
             let v = Vec4.random(-1 ... 1)
             let c: NSColor = (v.x * v.w - v.y * v.z > 0) ? .red : .blue

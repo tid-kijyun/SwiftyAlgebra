@@ -171,3 +171,10 @@ extension Array where Element == SCNVector4 {
 
 typealias Vec3 = SCNVector3
 typealias Vec4 = SCNVector4
+
+class Weak<T: AnyObject> {
+    weak var content: T?
+    init (_ content: T) {
+        self.content = content
+    }
+}

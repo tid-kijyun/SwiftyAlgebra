@@ -20,7 +20,7 @@ class SceneViewController : NSViewController {
     var objectsNode: SCNNode!
     
     // TODO create some entity struct
-    var objects: [Visual] = [] {
+    var objects: [Entity] = [] {
         didSet {
             generateObjectNodes()
         }
@@ -97,26 +97,18 @@ class SceneViewController : NSViewController {
     }
     
     func generateObjectNodes() {
-        objectsNode.childNodes.forEach { n in
-            n.removeFromParentNode()
-        }
-        
-        func add(_ _e: Visual, to parent: SCNNode) {
+        func add(_ _e: Entity, to parent: SCNNode) {
             switch _e {
             case let e as Point:
-                let n = pointNode(e)
-                e.node = n
+                let n = PointNode(e)
                 parent.addChildNode(n)
                 
             case let e as Edge:
-                let n = edgeNode(e)
-                e.node = n
+                let n = EdgeNode(e)
                 parent.addChildNode(n)
-                break
                 
             case let e as Polyhedron:
                 let n = SCNNode()
-                e.node = n
                 parent.addChildNode(n)
                 
                 for p in e.points { add(p, to: n) }
@@ -132,59 +124,16 @@ class SceneViewController : NSViewController {
     }
     
     func updateObjects() {
-        objects.forEach { e in
-            switch e {
-            case let p as Point:
-                if let n = p.node {
-                    n.opacity = (abs(p.w - wValue) < 1) ? exp(-pow(p.w - wValue, 2) * 15) : 0
-                }
-            default:
-                break
-            }
-        }
-    }
-    
-    private func pointNode(_ p: Point) -> SCNNode {
-        return pointNode(p.xyz, p.color)
-    }
-    
-    private func pointNode(_ pos: Vec3, _ color: NSColor = .black) -> SCNNode {
-        let s = SCNSphere(radius: 0.05)
-        s.segmentCount = 8
-        s.color = color
-        let n = SCNNode(geometry: s)
-        n.position = pos
-        return n
-    }
-    
-    private func edgeNode(_ e: Edge) -> SCNNode {
-        let v = e.vector
-        let h = v.xyz.length
-        
-        let s = SCNCylinder(radius: 0.025, height: h)
-        s.radialSegmentCount = 6
-        s.color = e.color
-        
-        let n = SCNNode()
-        n.position = e.position.xyz
-        
-        let (p0, p1) = (SCNNode(), SCNNode())
-        p0.position = (e.points.0.position - e.position).xyz
-        p1.position = (e.points.1.position - e.position).xyz
-        n.addChildNode(p0)
-        n.addChildNode(p1)
-        
-        let z = SCNNode()
-        z.eulerAngles.x = PI_2
-        
-        let c = SCNNode(geometry: s)
-        c.position.y = -h/2
-        z.addChildNode(c)
-        
-        p0.addChildNode(z)
-        p0.constraints = [SCNLookAtConstraint(target: p1)]
-        
-        return n
+//        objects.forEach { e in
+//            switch e {
+//            case let p as Point:
+//                if let n = p.node {
+//                    n.opacity = (abs(p.w - wValue) < 1) ? exp(-pow(p.w - wValue, 2) * 15) : 0
+//                }
+//            default:
+//                break
+//            }
+//        }
     }
     
     // interactions
@@ -206,5 +155,9 @@ class SceneViewController : NSViewController {
     @IBAction func sliderMoved(target: NSSlider) {
         wValue = CGFloat(target.doubleValue)
         updateObjects()
+        
+        let e = objects[0] as! Polyhedron
+        let p = e.points[0]
+        p.position = Vec4.zero
     }
 }
