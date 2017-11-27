@@ -68,8 +68,24 @@ extension SCNVector3 {
         return SCNVector3Zero
     }
     
+    static func +(v: SCNVector3, w: SCNVector3) -> SCNVector3 {
+        return SCNVector3(v.x + w.x, v.y + w.y, v.z + w.z)
+    }
+    
+    static prefix func -(v: SCNVector3) -> SCNVector3 {
+        return SCNVector3(-v.x, -v.y, -v.z)
+    }
+    
+    static func -(v: SCNVector3, w: SCNVector3) -> SCNVector3 {
+        return v + (-w)
+    }
+    
     static func *(a: CGFloat, v: SCNVector3) -> SCNVector3 {
         return SCNVector3(a * v.x, a * v.y, a * v.z)
+    }
+    
+    static func /(v: SCNVector3, a: CGFloat) -> SCNVector3 {
+        return SCNVector3(v.x / a, v.y / a, v.z / a)
     }
     
     static func random() -> SCNVector3 {
@@ -91,7 +107,7 @@ extension SCNVector4 {
     }
     
     var normalized: SCNVector4 {
-        return (1 / length) * self
+        return self / length
     }
     
     var xyz: SCNVector3 {
@@ -102,8 +118,24 @@ extension SCNVector4 {
         return SCNVector4Zero
     }
     
+    static func +(v: SCNVector4, w: SCNVector4) -> SCNVector4 {
+        return SCNVector4(v.x + w.x, v.y + w.y, v.z + w.z, v.w + w.w)
+    }
+    
+    static prefix func -(v: SCNVector4) -> SCNVector4 {
+        return SCNVector4(-v.x, -v.y, -v.z, -v.w)
+    }
+    
+    static func -(v: SCNVector4, w: SCNVector4) -> SCNVector4 {
+        return v + (-w)
+    }
+    
     static func *(a: CGFloat, v: SCNVector4) -> SCNVector4 {
         return SCNVector4(a * v.x, a * v.y, a * v.z, a * v.w)
+    }
+    
+    static func /(v: SCNVector4, a: CGFloat) -> SCNVector4 {
+        return SCNVector4(v.x / a, v.y / a, v.z / a, v.w / a)
     }
     
     static func random() -> SCNVector4 {
@@ -122,6 +154,18 @@ extension SCNGeometry {
         } set {
             firstMaterial?.diffuse.contents = newValue
         }
+    }
+}
+
+extension Array where Element == SCNVector3 {
+    var barycenter: SCNVector3 {
+        return self.reduce(SCNVector3.zero){ $0 + $1 } / CGFloat(self.count)
+    }
+}
+
+extension Array where Element == SCNVector4 {
+    var barycenter: SCNVector4 {
+        return self.reduce(SCNVector4.zero){ $0 + $1 } / CGFloat(self.count)
     }
 }
 

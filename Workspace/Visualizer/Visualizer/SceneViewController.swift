@@ -100,29 +100,34 @@ class SceneViewController : NSViewController {
         objectsNode.childNodes.forEach { n in
             n.removeFromParentNode()
         }
-        objects.forEach { e in
-            switch e {
-            case let p as Point:
-                let n = pointNode(p)
-                p.node = n
-                objectsNode.addChildNode(n)
+        
+        func add(_ _e: Visual, to parent: SCNNode) {
+            switch _e {
+            case let e as Point:
+                let n = pointNode(e)
+                e.node = n
+                parent.addChildNode(n)
                 
-            case let K as Polyhedron:
-                let n = SCNNode()
-                K.node = n
-                objectsNode.addChildNode(n)
-                
-                for p in K.points {
-                    let cn = pointNode(p)
-                    p.node = cn
-                    n.addChildNode(cn)
-                }
-                
+            case let e as Edge:
+                let n = edgeNode(e)
+                e.node = n
+                parent.addChildNode(n)
                 break
+                
+            case let e as Polyhedron:
+                let n = SCNNode()
+                e.node = n
+                parent.addChildNode(n)
+                
+                for p in e.points { add(p, to: n) }
+                for e in e.edges  { add(e, to: n) }
+
             default:
                 break
             }
         }
+        
+        objects.forEach { e in add(e, to: objectsNode) }
         updateObjects()
     }
     
@@ -151,6 +156,38 @@ class SceneViewController : NSViewController {
         n.position = pos
         return n
     }
+    
+    private func edgeNode(_ e: Edge) -> SCNNode {
+        let v = e.vector
+        let h = v.xyz.length
+        
+        let s = SCNCylinder(radius: 0.025, height: h)
+        s.radialSegmentCount = 6
+        s.color = e.color
+        
+        let n = SCNNode()
+        n.position = e.position.xyz
+        
+        let (p0, p1) = (SCNNode(), SCNNode())
+        p0.position = (e.points.0.position - e.position).xyz
+        p1.position = (e.points.1.position - e.position).xyz
+        n.addChildNode(p0)
+        n.addChildNode(p1)
+        
+        let z = SCNNode()
+        z.eulerAngles.x = PI_2
+        
+        let c = SCNNode(geometry: s)
+        c.position.y = -h/2
+        z.addChildNode(c)
+        
+        p0.addChildNode(z)
+        p0.constraints = [SCNLookAtConstraint(target: p1)]
+        
+        return n
+    }
+    
+    // interactions
     
     override func magnify(with event: NSEvent) {
         let camera = cameraNode.camera!
