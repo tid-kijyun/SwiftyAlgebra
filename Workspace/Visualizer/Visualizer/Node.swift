@@ -9,6 +9,33 @@
 import Cocoa
 import SceneKit
 
+extension SCNNode {
+    static func fromEntity(_ e: Entity) -> SCNNode {
+        switch e {
+        case let e as Point:
+            return PointNode(e)
+            
+        case let e as Edge:
+            return EdgeNode(e)
+            
+        case let e as Triangle:
+            return TriangleNode(e)
+            
+        case let e as Polyhedron:
+            let n = SCNNode()
+            
+            for p in e.points { n.addChildNode(fromEntity(p)) }
+            for e in e.edges  { n.addChildNode(fromEntity(e)) }
+            for f in e.faces  { n.addChildNode(fromEntity(f)) }
+            
+            return n
+            
+        default:
+            return SCNNode()
+        }
+    }
+}
+
 class PointNode: SCNNode, EntityObserver {
     let entity: Point
     
