@@ -10,25 +10,34 @@ import SceneKit
 import SwiftyAlgebra
 
 class ForceDirector {
-    static let l0: CGFloat = 1.0  // natural length
-    static let k : CGFloat = 3.0  // spring const
-    static let c : CGFloat = 3.0  // Coulomb const
-    static let d : CGFloat = 0.8  // decay
-    static let dt: CGFloat = 0.05
-    static let minE: CGFloat = 0.001
+    let l0: CGFloat = 1.0  // natural length
+    let k : CGFloat = 3.0  // spring const
+    let c : CGFloat = 3.0  // Coulomb const
+    let d : CGFloat = 0.8  // decay
+    let dt: CGFloat = 0.05
+    let minE: CGFloat = 0.001
     
-    static func apply(points: [Point], edges: [Edge], center: SCNVector4, maxIterations: Int = 10000) {
-        var vel: [Vec4] = Array(repeating: Vec4.zero, count: points.count)   // velocity of each point
-        var i = 1
+    let target: Polyhedron
+    let center: Vec4
+    
+    var vel: [Vec4]
+    var i = 0 // iteration
 
-        while itr(points, edges, &vel) > minE && i < maxIterations {
-            i += 1
-        }
-        
-        centrize(points, center)
+    init(_ target: Polyhedron) {
+        self.target = target
+        self.center = target.position
+        self.vel = Array(repeating: Vec4.zero, count: target.points.count)   // velocity of each point
     }
     
-    internal static func itr(_ points: [Point], _ edges: [Edge], _ vel: inout [Vec4]) -> CGFloat {
+    func start(maxIterations: Int = 10000) {
+        while itr() > minE && i < maxIterations {
+            i += 1
+        }
+        centrize()
+    }
+    
+    func itr() -> CGFloat {
+        let points = target.points
         var E: CGFloat = 0     // total energy
         
         for (i, p) in points.enumerated() {
@@ -62,33 +71,35 @@ class ForceDirector {
         return E
     }
     
-    private static func centrize(_ points: [Point], _ center: SCNVector4) {
-        let b = points.map{$0.position}.barycenter
-        points.forEach{ p in p.position = p.position - b + center }
+    func centrize() {
+        let b = target.points.map{ $0.position }.barycenter
+        target.points.forEach{ p in p.position = p.position - b + center }
     }
 }
 
 extension Polyhedron {
     convenience init(_ K: SimplicialComplex, position: SCNVector4 = SCNVector4.zero, color: NSColor = .blue) {
-        var pointMap = [Vertex : Point]()
+        var v2p = [Vertex : Point]()
         let points = K.vertices.map { v -> Point in
             let p =  Point(position: Vec4(Vec3.random(-1 ... 1)), color: color)
-            pointMap[v] = p
+            v2p[v] = p
             return p
         }
         
         let edges = K.cells(ofDim: 1).map { s -> Edge in
             let (v0, v1) = (s.vertices[0], s.vertices[1])
-            return Edge(p0: pointMap[v0]!, p1: pointMap[v1]!, color: color)
+            return Edge(p0: v2p[v0]!, p1: v2p[v1]!, color: color)
         }
         
         let faces = K.cells(ofDim: 2).map { s -> Triangle in
             let (v0, v1, v2) = (s.vertices[0], s.vertices[1], s.vertices[2])
-            return Triangle(p0: pointMap[v0]!, p1: pointMap[v1]!, p2: pointMap[v2]!, color: color)
+            return Triangle(p0: v2p[v0]!, p1: v2p[v1]!, p2: v2p[v2]!, color: color)
         }
         
-        ForceDirector.apply(points: points, edges: edges, center: position)
         self.init(points: points, edges: edges, faces: faces, position: Vec4.zero, color: color)
+        
+        let f = ForceDirector(self)
+        f.start()
     }
 }
 
