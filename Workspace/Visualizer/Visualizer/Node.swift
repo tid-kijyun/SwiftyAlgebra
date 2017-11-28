@@ -50,15 +50,14 @@ class PointNode: SCNNode, EntityObserver {
         
         let s = SCNSphere(radius: 0.05)
         s.segmentCount = 8
-        s.color = e.color
-        
         self.geometry = s
-        self.position = e.position.xyz
         
+        update(forEntity: e)
         e.addObserver(self)
     }
     
     func update(forEntity e: Entity) {
+        self.geometry!.color = e.color
         self.position = e.position.xyz
     }
     
@@ -101,13 +100,16 @@ class EdgeNode: SCNNode, EntityObserver {
         
         self.addChildNode(p0)
         self.addChildNode(p1)
-        self.position = e.position.xyz
         
         update(forEntity: e)
         e.addObserver(self)
     }
     
     func update(forEntity _: Entity) {
+        self.position = entity.position.xyz
+        cylinder.geometry!.color = entity.color
+        
+        // TODO update if necessary
         let v = entity.vector
         let h = v.xyz.length
         
@@ -154,7 +156,7 @@ class TriangleNode: SCNNode, EntityObserver {
     }
     
     func update(forEntity _: Entity) {
-        // TODO
+        self.geometry!.color = entity.color
     }
     
     deinit {

@@ -15,11 +15,13 @@ protocol EntityObserver: class {
 }
 
 class Entity: Equatable {
-    init(position: Vec4, color: NSColor) {
+    init(name: String = "", position: Vec4, color: NSColor) {
+        self.name = name
         self.position = position
         self.color = color
     }
     
+    var name: String
     var position: Vec4 { didSet { didUpdate() } }
     var color: NSColor { didSet { didUpdate() } }
     var observers: [Weak<AnyObject>] = []
@@ -70,9 +72,10 @@ class Point: Entity {
 class Edge: Entity, EntityObserver {
     let points: (Point, Point)
     
-    init(p0: Point, p1: Point, color: NSColor) {
+    init(name: String = "", p0: Point, p1: Point, color: NSColor) {
         self.points = (p0, p1)
-        super.init(position: [p0.position, p1.position].barycenter, color: color)
+        super.init(name: name, position: [p0.position, p1.position].barycenter, color: color)
+        
         p0.appendEdge(self)
         p1.appendEdge(self)
         p0.addObserver(self)
@@ -107,11 +110,11 @@ class Edge: Entity, EntityObserver {
 class Triangle: Entity, EntityObserver {
     let points: (Point, Point, Point)
     
-    init(p0: Point, p1: Point, p2: Point, color: NSColor) {
+    init(name: String = "", p0: Point, p1: Point, p2: Point, color: NSColor) {
         self.points = (p0, p1, p2)
         
         let pos = [p0.position, p1.position, p2.position].barycenter
-        super.init(position: pos, color: color)
+        super.init(name: name, position: pos, color: color)
         
         [p0, p1, p2].forEach{ $0.addObserver(self) }
     }
@@ -139,11 +142,11 @@ class Polyhedron: Entity {
     let edges:  [Edge]
     let faces:  [Triangle]
 
-    init(points: [Point], edges: [Edge], faces: [Triangle], position: Vec4, color: NSColor) {
+    init(name: String = "", points: [Point], edges: [Edge], faces: [Triangle], position: Vec4, color: NSColor) {
         self.points = points
         self.edges  = edges
         self.faces  = faces
         
-        super.init(position: position, color: color)
+        super.init(name: name, position: position, color: color)
     }
 }

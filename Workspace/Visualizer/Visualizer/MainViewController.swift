@@ -27,15 +27,19 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     @IBOutlet var objectSelector: NSPopUpButton!
     @IBOutlet var tableView: NSTableView!
     
-    let items   = ["S^2", "D^3", "T^2", "Mobius Strip"]
+    let items   = ["Sphere", "Torus", "Mobius Strip", "Klein Bottle", "Projective Plane", "Lens Space"]
     let objects = [ { SimplicialComplex.sphere(dim: 2) },
-                    { SimplicialComplex.ball(dim: 3) },
                     { SimplicialComplex.circle(vertices: 3) × SimplicialComplex.circle(vertices: 6) },
-                    { SimplicialComplex.mobiusStrip(circleVertices: 8, intervalVertices: 2) }
+                    { SimplicialComplex.mobiusStrip(circleVertices: 8, intervalVertices: 2) },
+                    { SimplicialComplex.kleinBottle(circleVertices: 6) },
+                    { SimplicialComplex.realProjectiveSpace(dim: 2) },
+                    { SimplicialComplex.lensSpace(3) }
+
                   ]
     
     private typealias TableElement = (Int, String, String, [Simplex])
     private var tableData: [TableElement] = []
+    private var polyhedron: Polyhedron!
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         switch segue.identifier {
@@ -57,7 +61,9 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     func selectObject(_ i: Int) {
         let K = objects[i]()
-        sceneViewController.objects = [ Polyhedron(K) ]
+        polyhedron = Polyhedron(K)
+        
+        sceneViewController.objects = [ polyhedron ]
         
         let H = Homology(K, Z.self)
         tableData = (H.offset ... H.topDegree).flatMap{ i -> [TableElement] in
@@ -67,7 +73,39 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             }
         }
         tableView.reloadData()
+        tableView.deselectAll(nil)
     }
+    
+    func selectRow(_ i: Int) {
+        let row = tableData[i]
+        let (d, cycle) = (row.0, row.3)
+        
+        let entities = polyhedron.points.map{ $0 as Entity }
+                     + polyhedron.edges .map{ $0 as Entity }
+                     + polyhedron.faces .map{ $0 as Entity }
+        
+        for e in entities {
+            if cycle.exists({ s in s.description == e.name }) {
+                e.color = .red
+            } else {
+                e.color = .blue
+            }
+            e.didUpdate()
+        }
+    }
+    
+    func unselectRow() {
+        let entities = polyhedron.points.map{ $0 as Entity }
+            + polyhedron.edges .map{ $0 as Entity }
+            + polyhedron.faces .map{ $0 as Entity }
+        
+        for e in entities {
+            e.color = .blue
+            e.didUpdate()
+        }
+    }
+    
+    // Delegates
     
     func numberOfRows(in tableView: NSTableView) -> Int {
         return tableData.count
@@ -85,5 +123,13 @@ class MainViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     @IBAction func objectSelected(_ s: NSPopUpButton) {
         let i = s.indexOfSelectedItem
         selectObject(i)
+    }
+    
+    @IBAction func tableRowSelected(_ t: NSTableView) {
+        if t.selectedRow >= 0 {
+            selectRow(t.selectedRow)
+        } else {
+            unselectRow()
+        }
     }
 }
