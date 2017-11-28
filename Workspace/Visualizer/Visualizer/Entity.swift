@@ -139,85 +139,11 @@ class Polyhedron: Entity {
     let edges:  [Edge]
     let faces:  [Triangle]
 
-    init(_ K: SimplicialComplex, position: Vec4, color: NSColor) {
-        var pointMap = [Vertex : Point]()
-        let points = K.vertices.map { v -> Point in
-            let p =  Point(position: Vec4(Vec3.random(-1 ... 1)), color: color)
-            pointMap[v] = p
-            return p
-        }
-        
-        let edges = K.cells(ofDim: 1).map { s -> Edge in
-            let (v0, v1) = (s.vertices[0], s.vertices[1])
-            return Edge(p0: pointMap[v0]!, p1: pointMap[v1]!, color: color)
-        }
-        
-        let faces = K.cells(ofDim: 2).map { s -> Triangle in
-            let (v0, v1, v2) = (s.vertices[0], s.vertices[1], s.vertices[2])
-            return Triangle(p0: pointMap[v0]!, p1: pointMap[v1]!, p2: pointMap[v2]!, color: color)
-        }
-        
+    init(points: [Point], edges: [Edge], faces: [Triangle], position: Vec4, color: NSColor) {
         self.points = points
         self.edges  = edges
         self.faces  = faces
         
         super.init(position: position, color: color)
-        
-        self.relax()
-        self.centrize()
-    }
-    
-    private func relax() {
-        let l0: CGFloat = 1.0  // natural length
-        let k : CGFloat = 3.0  // spring const
-        let c : CGFloat = 3.0  // Coulomb const
-        let d : CGFloat = 0.8  // decay
-        let dt: CGFloat = 0.05
-        
-        var vel: [Vec4] = Array(repeating: Vec4.zero, count: points.count)   // velocity of each point
-        
-        func itr() -> CGFloat {
-            var E: CGFloat = 0     // total energy
-            
-            for (i, p) in points.enumerated() {
-                
-                var force = Vec4.zero
-                
-                // coulomb force
-                force = force + points.reduce( Vec4.zero ) { (total, q) in
-                    if p == q { return total }
-                    let v = p.position - q.position
-                    let r = v.length
-                    let f = c / (r * r) * v.normalized
-                    return total + f
-                }
-                
-                // spring force
-                force = force + p.connectedEdges.reduce( Vec4.zero ) { (total, e) in
-                    let l = e.length
-                    let u = (e.points.0 == p) ? e.vector.normalized : -e.vector.normalized
-                    let f = (k * (l - l0)) * u
-                    return total + f
-                }
-                
-                let v = d * (vel[i] + dt * force)
-                p.position = p.position + dt * v
-                vel[i] = v
-                
-                E += pow(v.length, 2)
-            }
-
-            return E
-        }
-        
-        var i = 1
-        while itr() > 0.001 && i < 10000 {
-            i += 1
-        }
-    }
-    
-    private func centrize() {
-        let b = points.map{$0.position}.barycenter
-        points.forEach{ p in p.position = p.position - b }
     }
 }
