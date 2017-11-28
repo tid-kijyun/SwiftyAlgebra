@@ -17,19 +17,19 @@ class ForceDirector {
     let dt: CGFloat = 0.05
     let minE: CGFloat = 0.001
     
-    let target: Polyhedron
+    let points: [Point]
     let center: Vec4
     
-    var vel: [Vec4]
+    var vel: [Vec4] // velocity of each point
     var i = 0 // iteration
 
-    init(_ target: Polyhedron) {
-        self.target = target
-        self.center = target.position
-        self.vel = Array(repeating: Vec4.zero, count: target.points.count)   // velocity of each point
+    init(_ points: [Point], _ center: Vec4) {
+        self.points = points
+        self.center = center
+        self.vel = Array(repeating: Vec4.zero, count: points.count)
     }
     
-    func start(maxIterations: Int = 10000) {
+    func run(_ maxIterations: Int = 10000) {
         while itr() > minE && i < maxIterations {
             i += 1
         }
@@ -37,7 +37,6 @@ class ForceDirector {
     }
     
     func itr() -> CGFloat {
-        let points = target.points
         var E: CGFloat = 0     // total energy
         
         for (i, p) in points.enumerated() {
@@ -45,12 +44,14 @@ class ForceDirector {
             var force = Vec4.zero
             
             // coulomb force
-            force = force + points.reduce( Vec4.zero ) { (total, q) in
-                if p == q { return total }
-                let v = p.position - q.position
-                let r = v.length
-                let f = c / (r * r) * v.normalized
-                return total + f
+            if p.connectedEdges.count > 0 {
+                force = force + points.reduce( Vec4.zero ) { (total, q) in
+                    if p == q || q.connectedEdges.count == 0 { return total }
+                    let v = p.position - q.position
+                    let r = v.length
+                    let f = c / (r * r) * v.normalized
+                    return total + f
+                }
             }
             
             // spring force
@@ -72,8 +73,8 @@ class ForceDirector {
     }
     
     func centrize() {
-        let b = target.points.map{ $0.position }.barycenter
-        target.points.forEach{ p in p.position = p.position - b + center }
+        let b = points.map{ $0.position }.barycenter
+        points.forEach{ p in p.position = p.position - b + center }
     }
 }
 
@@ -88,7 +89,8 @@ extension Polyhedron {
         
         let edges = K.cells(ofDim: 1).map { s -> Edge in
             let (v0, v1) = (s.vertices[0], s.vertices[1])
-            return Edge(p0: v2p[v0]!, p1: v2p[v1]!, color: color)
+            let e = Edge(p0: v2p[v0]!, p1: v2p[v1]!, color: color)
+            return e
         }
         
         let faces = K.cells(ofDim: 2).map { s -> Triangle in
@@ -96,10 +98,10 @@ extension Polyhedron {
             return Triangle(p0: v2p[v0]!, p1: v2p[v1]!, p2: v2p[v2]!, color: color)
         }
         
-        self.init(points: points, edges: edges, faces: faces, position: Vec4.zero, color: color)
+        let fd = ForceDirector(points, position)
+        fd.run()
         
-        let f = ForceDirector(self)
-        f.start()
+        self.init(points: points, edges: edges, faces: faces, position: position, color: color)
     }
 }
 
