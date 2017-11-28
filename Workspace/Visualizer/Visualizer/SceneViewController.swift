@@ -76,7 +76,7 @@ class SceneViewController : NSViewController {
             }
             
             let originNode = SCNNode(geometry: {
-                let origin = SCNSphere(radius: 0.1)
+                let origin = SCNSphere(radius: 0.01)
                 origin.color = .black
                 return origin
             }())
@@ -95,11 +95,6 @@ class SceneViewController : NSViewController {
         
         objectsNode = SCNNode()
         scene.rootNode.addChildNode(objectsNode)
-        
-        // TODO ad-ref
-        let K = SimplicialComplex.circle(vertices: 3) × SimplicialComplex.circle(vertices: 12)
-        objects = [Polyhedron(K)]
-        // --TODO
     }
     
     func generateObjectNodes() {
