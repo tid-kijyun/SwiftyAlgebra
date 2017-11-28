@@ -8,6 +8,7 @@
 
 import Cocoa
 import SceneKit
+import SwiftyAlgebra
 
 class SceneViewController : NSViewController {
     var wValue: CGFloat = 0
@@ -94,6 +95,11 @@ class SceneViewController : NSViewController {
         
         objectsNode = SCNNode()
         scene.rootNode.addChildNode(objectsNode)
+        
+        // TODO ad-ref
+        let K = SimplicialComplex.circle(vertices: 3) × SimplicialComplex.circle(vertices: 12)
+        objects = [Polyhedron(K)]
+        // --TODO
     }
     
     func generateObjectNodes() {

@@ -7,20 +7,9 @@
 //
 
 import Cocoa
-import SwiftyAlgebra
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        guard let vc = NSApplication.shared.mainWindow?.contentViewController as? SceneViewController else {
-            fatalError()
-        }
-        let T = SimplicialComplex.torus(dim: 2, circleVertices: 6)
-        vc.objects = [
-            Polyhedron(T)
-        ]
-    }
 
     // TODO move to some model class
     
