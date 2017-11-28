@@ -88,15 +88,15 @@
 		1451C2601F7E76BB00000802 /* Visualizer */ = {
 			isa = PBXGroup;
 			children = (
+				1451C2671F7E76BB00000802 /* Main.storyboard */,
 				1451C2611F7E76BB00000802 /* AppDelegate.swift */,
 				1451C2631F7E76BB00000802 /* SceneViewController.swift */,
 				DD8554DE1FCBA8C10093034D /* Entity.swift */,
 				DD8554E31FCBE2500093034D /* Node.swift */,
 				DDFF85771FCCFA2100804901 /* ForceDirector.swift */,
-				1451C26B1F7E76BB00000802 /* Visualizer.entitlements */,
 				1451C27F1F7E78CD00000802 /* Utils.swift */,
+				1451C26B1F7E76BB00000802 /* Visualizer.entitlements */,
 				1451C2651F7E76BB00000802 /* Assets.xcassets */,
-				1451C2671F7E76BB00000802 /* Main.storyboard */,
 				1451C26A1F7E76BB00000802 /* Info.plist */,
 			);
 			path = Visualizer;

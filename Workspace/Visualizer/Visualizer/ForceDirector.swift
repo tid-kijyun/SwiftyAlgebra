@@ -17,7 +17,7 @@ class ForceDirector {
     static let dt: CGFloat = 0.05
     static let minE: CGFloat = 0.001
     
-    static func apply(points: [Point], edges: [Edge], maxIterations: Int = 10000) {
+    static func apply(points: [Point], edges: [Edge], center: SCNVector4, maxIterations: Int = 10000) {
         var vel: [Vec4] = Array(repeating: Vec4.zero, count: points.count)   // velocity of each point
         var i = 1
 
@@ -25,7 +25,7 @@ class ForceDirector {
             i += 1
         }
         
-        centrize(points: points)
+        centrize(points, center)
     }
     
     internal static func itr(_ points: [Point], _ edges: [Edge], _ vel: inout [Vec4]) -> CGFloat {
@@ -62,14 +62,14 @@ class ForceDirector {
         return E
     }
     
-    private static func centrize(points: [Point]) {
+    private static func centrize(_ points: [Point], _ center: SCNVector4) {
         let b = points.map{$0.position}.barycenter
-        points.forEach{ p in p.position = p.position - b }
+        points.forEach{ p in p.position = p.position - b + center }
     }
 }
 
 extension Polyhedron {
-    convenience init(_ K: SimplicialComplex, color: NSColor = .blue) {
+    convenience init(_ K: SimplicialComplex, position: SCNVector4 = SCNVector4.zero, color: NSColor = .blue) {
         var pointMap = [Vertex : Point]()
         let points = K.vertices.map { v -> Point in
             let p =  Point(position: Vec4(Vec3.random(-1 ... 1)), color: color)
@@ -87,7 +87,7 @@ extension Polyhedron {
             return Triangle(p0: pointMap[v0]!, p1: pointMap[v1]!, p2: pointMap[v2]!, color: color)
         }
         
-        ForceDirector.apply(points: points, edges: edges)
+        ForceDirector.apply(points: points, edges: edges, center: position)
         self.init(points: points, edges: edges, faces: faces, position: Vec4.zero, color: color)
     }
 }

@@ -16,8 +16,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let vc = NSApplication.shared.mainWindow?.contentViewController as? SceneViewController else {
             fatalError()
         }
+        let T = SimplicialComplex.torus(dim: 2, circleVertices: 6)
         vc.objects = [
-            Polyhedron(SimplicialComplex.sphere(dim: 1), position: Vec4.zero, color: .blue)
+            Polyhedron(T)
         ]
     }
 
