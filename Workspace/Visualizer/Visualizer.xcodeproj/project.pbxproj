@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		141324F71FD6BA7000F14462 /* Complex2Polyhedron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141324F61FD6BA7000F14462 /* Complex2Polyhedron.swift */; };
 		1451C2621F7E76BB00000802 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1451C2611F7E76BB00000802 /* AppDelegate.swift */; };
 		1451C2641F7E76BB00000802 /* SceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1451C2631F7E76BB00000802 /* SceneViewController.swift */; };
 		1451C2661F7E76BB00000802 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1451C2651F7E76BB00000802 /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		141324F61FD6BA7000F14462 /* Complex2Polyhedron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complex2Polyhedron.swift; sourceTree = "<group>"; };
 		1451C25E1F7E76BB00000802 /* Visualizer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Visualizer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1451C2611F7E76BB00000802 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1451C2631F7E76BB00000802 /* SceneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneViewController.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				DD8554DE1FCBA8C10093034D /* Entity.swift */,
 				DD8554E31FCBE2500093034D /* Node.swift */,
 				DDFF85771FCCFA2100804901 /* ForceDirector.swift */,
+				141324F61FD6BA7000F14462 /* Complex2Polyhedron.swift */,
 				1451C27F1F7E78CD00000802 /* Utils.swift */,
 				1451C26B1F7E76BB00000802 /* Visualizer.entitlements */,
 				1451C2651F7E76BB00000802 /* Assets.xcassets */,
@@ -225,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DDFF857A1FCD411500804901 /* MainViewController.swift in Sources */,
+				141324F71FD6BA7000F14462 /* Complex2Polyhedron.swift in Sources */,
 				DD8554DF1FCBA8C10093034D /* Entity.swift in Sources */,
 				DDFF85781FCCFA2100804901 /* ForceDirector.swift in Sources */,
 				DD8554E41FCBE2500093034D /* Node.swift in Sources */,
