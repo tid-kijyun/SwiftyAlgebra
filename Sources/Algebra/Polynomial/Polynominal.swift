@@ -145,7 +145,7 @@ public struct Polynomial<K: Field>: EuclideanRing, Module {
     }
     
     public var description: String {
-        let res = coeffs.enumerated().flatMap {
+        let res = coeffs.enumerated().compactMap {
             (n: Int, a: K) -> String? in
             switch(a, n) {
             case ( 0, _): return nil
